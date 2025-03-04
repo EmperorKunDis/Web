@@ -1,0 +1,141 @@
+---
+import {Image} from "astro:assets";
+import {prautWork} from "../../data/prautWork";
+---
+<div class="container pt-10 pb-2 px-2">
+    <div class="w-full flex flex-col">
+        <h2 class="text-center mb-2">Příklady naší práce</h2>
+        <p class="text-sm text-center mb-6">Takto jsme vylepšili a pomohli našim zákazníkům dosáhnout svých cílů</p>
+        <astro-carousel>
+            <div class="flex flex-row items-center">
+                <button type="button"
+                        class="relative flex shadow-lg max-sm:hidden justify-center flex-initial rounded-full w-5 h-5 cursor-pointer mx-1
+                    before:absolute before:w-full before:h-full before:rounded-4xl before:border-3 before:border-transparent before:bg-blue-50 before:transition before:duration-300 hover:before:scale-120 active:duration-75 active:before:scale-95">
+                    <span class="relative text-blue-200 text-4xl font-bold">‹</span>
+                </button>
+                <div id="carousel"
+                     class="flex-1 flex flex-row flex-nowrap gap-2 snap-x overflow-hidden">
+                    {
+                        prautWork.map((work) => (
+                                <div class="group snap-start w-(--work-card-width) flex flex-initial flex-shrink-0 flex-col bg-white border border-light-blue p-2 rounded-lg ">
+                                    <div class="relative overflow-hidden rounded-lg">
+                                        <Image class="h-30 w-full object-cover object-top transition duration-500 group-hover:scale-105"
+                                               src={import.meta.env.BASE_URL + work.image} alt={work.title} height="228"
+                                               width="500"/>
+                                    </div>
+                                    <div class="flex flex-row gap-1 my-2">
+                                        {work.labels.map((label) => (
+                                                <span class="px-1 text-xs/2 border rounded-4xl text-blue-600 font-bold border-blue-600 bg-blue-50">{label}</span>
+                                        ))}
+                                    </div>
+                                    <h3 class="text-lg font-montserrat mb-1">{work.title}</h3>
+                                    <p class="flex-1 text-sm whitespace-pre-line mb-2">{work.text}</p>
+                                    <div class="flex flex-row items-center p-1 text-xs/2 whitespace-pre-line bg-lighter-blue border border-light-blue rounded-xl">
+                                        <div class="mr-1 h-1 w-1 rounded-4xl bg-green-500"></div>
+                                        <i>{work.notes}</i>
+                                    </div>
+                                </div>
+                        ))
+                    }
+                </div>
+                <button type="button"
+                        class="relative flex shadow-lg max-sm:hidden justify-center flex-initial rounded-full w-5 h-5 cursor-pointer mx-1
+                    before:absolute before:w-full before:h-full before:rounded-4xl before:border-3 before:border-transparent before:bg-blue-50 before:transition before:duration-300 hover:before:scale-120 active:duration-75 active:before:scale-95">
+                    <span class="relative text-blue-200 text-4xl font-bold">›</span>
+                </button>
+            </div>
+            <div id="crumbs" class="flex flex-row items-center justify-center mt-5"></div>
+        </astro-carousel>
+    </div>
+
+</div>
+
+<script>
+
+    import {prautWork} from "../../data/prautWork";
+
+    class AstroCarousel extends HTMLElement {
+        connectedCallback() {
+            let activeGroup = 0;
+            const maxIndex = (Math.ceil(prautWork.length / 2) - 1);
+            const crumbs: HTMLElement = this.querySelector('#crumbs')
+            const button = this.querySelectorAll('button');
+            const carousel = this.querySelector('#carousel');
+            let touchStart = 0;
+            let touchEnd = 0;
+            const touchThreshold = 50;
+
+            setCrumbs(crumbs, 0)
+
+            button[1].addEventListener('click', () => {
+                shiftCrumbs(crumbs, 1);
+            })
+
+            button[0].addEventListener('click', () => {
+                shiftCrumbs(crumbs, -1);
+            })
+
+            carousel.addEventListener('touchstart', (event: TouchEvent) => {
+                touchStart = event.touches[0].clientX;
+                console.log(touchStart);
+            })
+
+            carousel.addEventListener('touchmove', (event: TouchEvent) => {
+                touchEnd = event.touches[0].clientX;
+                console.log(touchStart);
+            })
+            carousel.addEventListener('touchend', (event: TouchEvent) => {
+                const diff = touchEnd - touchStart;
+                if (Math.abs(diff) > touchThreshold) {
+                    if (diff > 0) {
+                        shiftCrumbs(crumbs, -1);
+                    } else {
+                        shiftCrumbs(crumbs, 1);
+                    }
+                }
+            })
+
+            function shiftCrumbs(crumbs: HTMLElement, adds: number | false, index?: number) {
+                if (adds !== false) {
+                    activeGroup = activeGroup + adds;
+                    activeGroup = activeGroup < 0 ? maxIndex : (activeGroup > maxIndex ? 0 : activeGroup);
+                } else if (index !== undefined) {
+                    activeGroup = index;
+                }
+
+                carousel.scrollTo({
+                    left: activeGroup * carousel.getBoundingClientRect().width,
+                    behavior: 'smooth',
+                })
+                setCrumbs(crumbs, activeGroup);
+            }
+
+            function setCrumbs(crumbs: HTMLElement, activeGroup: number) {
+                if (crumbs.children.length > 0) {
+                    for (let i = 0; i < crumbs.children.length; i++) {
+                        crumbs.children[i].classList.remove('bg-blue-200');
+                    }
+                    crumbs.children[activeGroup].classList.add('bg-blue-200')
+                } else {
+                    prautWork.forEach((work, index) => {
+                        if (index % 2 === 0) {
+                            const crumbEl = document.createElement('div');
+                            crumbEl.setAttribute('class', 'cursor-pointer mr-1 h-2 w-2 rounded-full bg-blue-50 animate duration-1000');
+                            crumbEl.addEventListener('click', () => {
+                                console.log(index, Math.ceil(index / 2));
+                                shiftCrumbs(crumbs, false, Math.ceil(index / 2))
+                            })
+
+                            if (index === activeGroup) {
+                                crumbEl.classList.add('bg-blue-200');
+                            }
+                            crumbs.appendChild(crumbEl);
+                        }
+                    })
+                }
+            }
+        }
+    }
+
+    customElements.define('astro-carousel', AstroCarousel);
+</script>

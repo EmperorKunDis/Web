@@ -1,0 +1,30 @@
+---
+import {Image} from "astro:assets";
+import {reviews} from "../../data/reviews";
+---
+
+<div id="reference" class="w-full bg-gray-100">
+    <div class="container py-10 px-2">
+        <div class="w-full flex flex-col">
+            <h2 class="text-center mb-5">Přidejte se k dalším spokojeným zákazníkům</h2>
+            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {
+                    reviews.map((review) => (
+                            <div class="flex flex-col relative p-2 rounded-lg before:absolute before:-left-2 before:border-light-gray max-md:before:border-b md:not-first:before:border-l before:h-full">
+                                <p class="flex-1 text-sm whitespace-pre-line pt-4"><i>&quot;{review.text}&quot;</i></p>
+                                <div class="flex flex-row items-center mt-4 gap-2">
+                                    <Image width="65" height="65" src={import.meta.env.BASE_URL + review.thumbnail} alt={review.user}
+                                           class="w-10 flex-10 rounded-full"/>
+                                    <div class="flex flex-col w-90 flex-90">
+                                        <span class="text-md font-montserrat mb-1 font-bold text-main-gradient">{review.user}</span>
+                                        <span class="text-md font-source mb-1">{review.post}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</div>

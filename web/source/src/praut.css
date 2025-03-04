@@ -1,0 +1,254 @@
+@import 'tailwindcss';
+
+@theme {
+    --color-primary: #283487;
+    --color-secondary: #55178C;
+    --spacing: 0.5rem;
+    --text-base: 16px;
+    --light-gray: #DADADA;
+    --lighter-gray: #F5F5F5;
+    --light-blue: #9FBFFF;
+
+    --color-blue-50: #EDF4FF;
+    --color-blue-100: #DEEBFF;
+    --color-blue-200: #9FBFFF;
+    --color-blue-600: #3B4EF0;
+
+    --color-purple-700: #55178C;
+
+    --work-card-width: calc(50% - var(--spacing));
+}
+
+@utility font-montserrat {
+    font-family: "Montserrat", serif;
+}
+
+@utility font-source {
+    font-family: "Source Sans 3", serif;
+}
+
+@utility bg-main-gradient {
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
+
+@utility bg-light-gradient {
+    background: linear-gradient(74.09deg, var(--color-blue-100) 15.19%, #F2E7FF 100.8%);
+}
+
+@utility bg-middle-gradient {
+    background: linear-gradient(90deg, var(--color-blue-200) 0%, #D6B0FF 100%);
+}
+
+@utility bg-lighter-blue {
+    background-color: var(--color-blue-100);
+}
+
+@utility text-main-gradient {
+    @apply bg-main-gradient;
+    color: transparent;
+    background-clip: text;
+}
+
+@utility text-purple {
+    color: var(--color-secondary)
+}
+
+@utility border-light-gray {
+    border-color: var(--light-gray);
+}
+
+@utility border-light-blue {
+    border-color: var(--light-blue);
+}
+
+@utility border-main-gradient {
+    background: linear-gradient(white, white) padding-box, linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%) border-box;
+}
+
+@utility input-main-gradient-border {
+    border: double 2px transparent;
+    background-image: linear-gradient(white, white), linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+.input-main-gradient-border:focus, .input-main-gradient-border:focus-visible, textarea:focus, textarea:focus-visible {
+    outline: none;
+}
+
+:root {
+    color: #363636;
+
+    .text-blue {
+        color: var(--color-primary);
+    }
+
+    #hero {
+        background-image: url('./assets/hero.svg');
+        background-position: right;
+        background-repeat: no-repeat;
+        background-size: auto;
+        z-index: 0;
+    }
+
+    @media (max-width: 768px) {
+        #hero {
+            background-position-x: 60vw;
+        }
+    }
+
+    @media (max-width: 640px) {
+        #hero {
+            background-position-x: 75vw;
+        }
+    }
+
+}
+
+html,
+body {
+
+    @media (max-width: 640px) {
+        --work-card-width: calc(100% - var(--spacing));
+    }
+
+    margin: 0;
+    width: 100%;
+    height: 100%;
+
+    scroll-behavior: smooth;
+
+
+    @apply font-source;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 23px;
+    text-align: left;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+
+    h1, h2, h3, h4, h5, h6, .praut-title {
+        @apply font-montserrat;
+        text-underline-position: from-font;
+        text-decoration-skip-ink: none;
+    }
+
+    h1, .praut-title {
+        @apply text-5xl;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+
+    .secondary-accented {
+        @apply bg-middle-gradient;
+        color: transparent;
+        background-clip: text;
+    }
+
+    .primary-accented {
+        @apply bg-main-gradient;
+        color: transparent;
+        background-clip: text;
+    }
+
+    h2 {
+        font-size: 42px;
+        line-height: 51px;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+
+    h3 {
+        @apply text-2xl;
+        color: var(--color-primary);
+        font-weight: 600;
+    }
+
+    h4, .login-btn {
+        @apply text-lg bg-main-gradient;
+        color: transparent;
+        background-clip: text;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+    }
+
+    .container {
+        margin: 0 auto;
+    }
+
+    @media (min-width: 1280px) {
+        .container {
+            max-width: min(1140px, 80vw);
+        }
+    }
+
+    /** alert boxes */
+
+    .alert-static {
+        position: fixed;
+        display: none;
+        top: calc(var(--spacing) * 10);
+        right: calc(var(--spacing) * 5);
+        @apply rounded-3xl shadow-md border-2 p-2;
+        transition: all 400ms ease-in-out;
+
+        &.active {
+            display: inline-block;
+        }
+
+        &.success {
+            border-color: var(--color-secondary);
+            color: var(--color-secondary);
+            background-color: var(--color-blue-50);
+
+            &:before {
+                content: "✔";
+                margin-right: calc(var(--spacing) * 2);
+            }
+        }
+
+        &.error {
+            @apply bg-red-100 border-red-500 text-red-500;
+
+            &:before {
+                content: "✖";
+                margin-right: calc(var(--spacing) * 2);
+            }
+        }
+
+    }
+
+    /* select in contact */
+
+    .select-selected {
+        @apply input-main-gradient-border rounded-4xl text-gray-900
+    }
+
+    .select-items {
+        @apply bg-middle-gradient rounded-4xl mt-1;
+    }
+
+    /** scroll bar pro webkit **/
+
+    ::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+        border-right: 1px solid var(--light-blue);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--light-blue);
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar:hover {
+        width: calc(var(--spacing) * 10);
+    }
+}
+
+@view-transition {
+    navigation: auto;
+}

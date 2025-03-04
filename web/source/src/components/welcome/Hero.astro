@@ -1,0 +1,97 @@
+---
+---
+
+<section id="hero" class="container relative pb-12">
+    <div class="p-4 mb-4">
+        <div class="praut-title mb-2 relative pb-14">
+            <div id="pr" class="absolute block">Pr</div>
+            <div id="aut" class="absolute left-6 md:left-7.5 secondary-accented inline">aut</div>
+        </div>
+        <p class="text-xl">Transformujte svou firmu pomocí AI <br class="max-sm:hidden"/> automatizace a
+            vylepšete ji, aby zůstal<br class="max-sm:hidden"/> konkurenceschopná v
+            moderním světě.</p>
+    </div>
+    <div class="w-full lg:w-1/2 flex gap-2 px-2">
+        <a
+                href="#pomahame"
+                class="relative flex h-7 flex-1/2 items-center justify-center px-2
+            before:absolute before:inset-0 before:rounded-4xl before:bg-main-gradient before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+        >
+            <span class="relative text-xs text-center md:text-base text-white font-montserrat font-bold">Posuňte svou firmu dál</span>
+        </a>
+        <a href={import.meta.env.BASE_URL + 'kontakt'}
+           class="relative flex h-7 flex-1/2 items-center justify-center px-2 rounded-4xl
+           before:absolute before:w-full before:h-full before:rounded-4xl before:border-3 before:border-transparent before:border-main-gradient before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+        >
+            <span class="relative text-xs text-center md:text-base text-main-gradient font-montserrat font-bold">Nabídka přímo pro Vás</span>
+        </a>
+    </div>
+</section>
+
+<style>
+    #aut {
+        top: 1px;
+        transition: top 700ms ease-out;
+    }
+
+    #aut.top-6 {
+        top: calc(var(--spacing) * 6);
+    }
+</style>
+
+<script>
+
+    import {changingTitle} from "../../data/changingTitle";
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const dataText = changingTitle;
+
+            function typeWriter(type: 'wr' | 'del', text: string, i: number, selector: string, fnCallback: Function) {
+                if (i < text.length) {
+                    const prefix = selector === "#pr" ? "Pr" : "aut"
+                    const startingIndex = (selector === "#pr" ? 2 : 3);
+                    const pos = (type === 'wr' ? (i + prefix.length - 1) : (text.length - i + prefix.length - 1));
+                    document.querySelector(selector).innerHTML = prefix + text.substring(startingIndex, pos) + '<span aria-hidden="true"></span>';
+
+                    setTimeout(() => {
+                        typeWriter(type, text, i + 1, selector, fnCallback);
+                        }, 80)
+                    } else {
+                    if (type === 'del') {
+                        if (selector === '#pr') {
+                            document.querySelector('#aut').classList.remove('top-6')
+                            }
+                        setTimeout(fnCallback, 0);
+                        } else {
+                        setTimeout(() => {
+                            typeWriter('del', text, 0, selector, fnCallback)
+                            }, 3000);
+                        }
+                    }
+                }
+
+            function startTextAnimation(i: number) {
+                setTimeout(() => {
+                    document.querySelector('#aut').classList.add('top-6')
+                    }, 1200)
+                setTimeout(() => {
+                    if (i >= dataText.length) {
+                        startTextAnimation(0)
+
+                        }
+
+                    if (i < dataText.length) {
+                        typeWriter('wr', "automation", 2, "#aut", () => {
+                            });
+                        typeWriter('wr', dataText[i], 1, "#pr", () => {
+                            startTextAnimation(i + 1)
+                            });
+
+                        }
+
+                    }, 1400);
+                }
+
+            startTextAnimation(0);
+            })
+</script>

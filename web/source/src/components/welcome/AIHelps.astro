@@ -1,0 +1,20 @@
+---
+import {aiHelpsCards} from "../../data/aiHelpsCards";
+---
+<div id="pomahame" class="container py-10 px-2">
+    <div class="w-full flex flex-col">
+        <h2 class="text-center mb-2">Jak pomáháme modernizovat firmy</h2>
+        <p class="text-sm text-center mb-6">Používáme nejmodernější postupy pro naše klienty</p>
+        <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {
+                aiHelpsCards.map((card) => (
+                        <div class="bg-main-gradient text-white p-2 rounded-lg">
+                            <h3 class="text-lg text-white! font-light! font-montserrat">{card.label}</h3>
+                            <p class="text-sm whitespace-pre-line mt-1">{card.text}</p>
+                        </div>
+                ))
+            }
+        </div>
+    </div>
+</div>
+

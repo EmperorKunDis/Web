@@ -1,0 +1,21 @@
+---
+import {Image} from "astro:assets";
+import {prautTechnology} from "../data/prautTechnology";
+---
+<div class="w-full">
+    <div class="container pt-10 px-2">
+        <div class="w-full flex flex-col items-center">
+            <h2 class="text-center mb-10">Nabízíme možnost implementace široké škály více než 1300 online nástrojů</h2>
+            <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {
+                    prautTechnology.map((product) => (
+                            <div class="flex flex-col relative p-4 bg-white rounded-lg border border-light-blue">
+                                <h3 class="">{product.label}</h3>
+                                <p class="text-sm whitespace-pre-line py-2">{product.text}</p>
+                            </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</div>

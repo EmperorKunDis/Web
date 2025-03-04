@@ -1,0 +1,26 @@
+---
+import hero from '../assets/hero.svg'
+import {Image} from "astro:assets";
+---
+
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + '/favicon.svg'}/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Source+Sans+3&display=swap"
+          rel="stylesheet">
+    <title>PRAUT s.r.o.</title>
+</head>
+<body class="flex flex-col min-h-full justify-center items-center bg-light-gradient">
+    <section id="maintanance" class="flex flex-col items-center justify-center container">
+        <Image src={hero} alt="PRAUT s.r.o." />
+        <p class="my-4">
+            Již brzy...
+        </p>
+    </section>
+</body>
+</html>

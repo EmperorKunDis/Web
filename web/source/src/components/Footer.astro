@@ -1,0 +1,78 @@
+---
+import prautLogo from '../assets/praut.svg';
+import instagramIcon from '../assets/instagram.svg';
+import facebookIcon from '../assets/facebook.svg';
+import xIcon from '../assets/x.svg';
+import linkedinIcon from '../assets/linkedin.svg';
+import {footerMenus} from "../data/links";
+---
+
+<div id="footer" class="pt-8 w-full flex shrink-0 stretch-0 self-end">
+    <div class="container flex flex-wrap flex-col sm:flex-row py-2 px-5 align-items-start justify-items-start justify-center">
+        <div class="sm:w-1/4 flex-25 px-2">
+            <a href="/"><img src={prautLogo.src} width="115" height="48" alt="Astro Homepage"/></a>
+            <p class="pt-2 text-base">
+                Transformace podniků <br/> prostřednictvím inteligentních <br/> automatizačních řešení.
+            </p>
+        </div>
+        {footerMenus.map((menu) => (
+                <div class="sm:w-1/4 flex-25 px-2">
+                    <span class="primary-accented font-bold text-lg font-montserrat">{menu.title}</span>
+                    <ul class="mt-1">
+                        {menu.links.map((link) =>
+                            (
+                                    <li><a href={import.meta.env.BASE_URL + link.to}>{link.title}</a></li>
+                            )
+                        )}
+                    </ul>
+                </div>
+        ))}
+        <div class="sm:w-1/4 flex-initial px-2">
+            <span class="primary-accented font-bold text-lg font-montserrat">Sociální sítě</span>
+            <div class="flex justify-items-center mt-1">
+                <a class="flex-1 hover:transition hover:duration-100 hover:scale-120"
+                   target="_blank"
+                   href="https://www.linkedin.com/company/praut-ai/"><img
+                        src={linkedinIcon.src} width="25" height="25"
+                        alt="Spojete se s námi na LinkedIn"/>
+                </a>
+                <a class="flex-1 hover:transition hover:duration-100 hover:scale-120"
+                   target="_blank"
+                   href="https://www.instagram.com/praut_tech?igsh=MXNyM25nMjVxN3Zl&utm_source=qr"><img
+                        src={instagramIcon.src} width="25" height="25"
+                        alt="Spojete se s nám na Instagramu"/>
+                </a>
+                <a class="flex-1 hover:transition hover:duration-100 hover:scale-120"
+                   target="_blank"
+                   href="https://x.com/prautech?s=21"><img src={xIcon.src}
+                                                           width="25"
+                                                           height="25"
+                                                           alt="Sledujte náš X"/>
+                </a>
+                <a class="flex-1 hover:transition hover:duration-100 hover:scale-120"
+                   target="_blank"
+                   href="https://www.facebook.com/share/18RqYibxzW/?mibextid=wwXIfr">
+                    <img src={facebookIcon.src}
+                         width="25"
+                         height="25"
+                         alt="Sledujte náš facebook"/>
+                </a>
+            </div>
+        </div>
+        <div class="w-full pt-2">
+            <small>&copy; All rights reserved. 2025 PRAUT s.r.o.</small>
+        </div>
+    </div>
+</div>
+
+<style>
+    @reference "../praut.css";
+
+    #footer {
+        background: linear-gradient(84.84deg, #DEEBFF 8.89%, #F2E7FF 98.37%);
+    }
+
+    li {
+        @apply text-base pb-2 font-montserrat;
+    }
+</style>

@@ -1,0 +1,90 @@
+---
+import {Image} from 'astro:assets';
+import prautLogo from '../assets/praut.svg';
+import {topNavbarMenu} from "../data/links";
+---
+
+<header>
+    <nav id="nav" class="absolute group w-full flex items-center justify-between px-5 mb-5 bg-white shadow-xs shadow-purple-200">
+        <div class="flex mr-3 z-20">
+            <a href={import.meta.env.BASE_URL}>
+                <Image src={prautLogo} width="115" height="48" alt="PRAUT s.r.o. homepage"/>
+            </a>
+        </div>
+
+        <div class="relative flex max-h-10 items-center z-20 lg:hidden">
+            <button aria-label="hamburger" id="hamburger" class="relative -mr-6 px-6 py-2 active:scale-95 duration-300">
+                <div aria-hidden="true" id="line"
+                     class="m-auto h-0.5 w-5 rounded bg-main-gradient transition duration-300 origin-top group-data-[state=active]:rotate-45 group-data-[state=active]:translate-y-1.5"></div>
+                <div aria-hidden="true" id="line2"
+                     class="m-auto mt-1 h-0.5 w-5 rounded bg-main-gradient transition duration-300 origin-bottom group-data-[state=active]:-rotate-45 group-data-[state=active]:-translate-y-1"></div>
+            </button>
+        </div>
+
+        <div id="navLayer" aria-hidden="true" class="fixed inset-0 z-10 h-screen w-screen origin-bottom scale-y-0 bg-white/10 backdrop-blur-sm transition duration-500 group-data-[state=active]:origin-top group-data-[state=active]:scale-y-100 lg:hidden"></div>
+        <div id="navlinks"
+             class="invisible absolute top-full right-0 z-20 mr-4 origin-top-right translate-y-1 scale-90 flex-col flex-wrap justify-end gap-6 rounded-4xl border border-gray-100 max-lg:bg-light-gradient p-8 opacity-0 shadow-2xl shadow-gray-600/10 transition-all duration-300
+             lg:mx-0 lg:visible lg:relative lg:flex lg:w-fit lg:translate-y-0 lg:scale-100 lg:flex-row lg:items-center lg:gap-0 lg:border-none lg:p-0 lg:opacity-100 lg:shadow-none group-data-[state=active]:visible group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 lg:group-data-[state=active]:translate-y-0">
+            <div class="w-full lg:w-auto lg:pr-4 lg:pt-0">
+                <div id="links-group" class="flex flex-col tracking-wide gap-1 lg:gap-6 lg:flex-row lg:text-sm">
+                    {
+                        topNavbarMenu.map((link) => (
+                                <a class="text-sm/6 font-montserrat" href={import.meta.env.BASE_URL + link.to}>{link.label}</a>
+                        ))
+                    }
+                    <a href="https://app.praut.cz/" class="inline-flex items-center rounded-4xl lg:px-2 py-1 cursor-pointer login-btn">
+                        Přihlásit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<style>
+
+    header {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        z-index: 99;
+
+        nav{
+            background-color: #FFFFFF;
+        }
+
+    }
+
+    .login-btn {
+        text-transform: uppercase;
+        margin: 2px 0 0 0;
+    }
+
+</style>
+
+<script>
+    let isToggled = false;
+    const navbar = document.querySelector("#nav") as HTMLElement;
+    const menuBtn = document.querySelector("#hamburger") as HTMLButtonElement;
+    const links = [...navbar.querySelector("#links-group").children] as HTMLAnchorElement[];
+
+    function toggleNavlinks() {
+        if (isToggled) {
+            navbar.dataset.state = "active";
+        } else {
+            navbar.dataset.state = "";
+        }
+    }
+
+    menuBtn.addEventListener("click", () => {
+        isToggled = !isToggled;
+        toggleNavlinks();
+    });
+
+    links.forEach((link) => {
+        link.addEventListener("click", () => {
+            isToggled = !isToggled;
+            toggleNavlinks();
+        });
+    });
+</script>

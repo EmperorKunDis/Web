@@ -1,0 +1,261 @@
+---
+import {contactReasons} from '../data/contactReasons';
+---
+
+<div class='container relative pb-12 pt-6'>
+    <main class='flex flex-col lg:flex-row space-between items-center'>
+        <div class='flex md:flex-1/2 flex-col px-4'>
+            <h1 class='mb-3'>Kontaktujte nás</h1>
+            <p class='text-xl'>Připraveni transformovat Vaší firmu? Probereme spolu, jak můžeme zlepšit fungování Vašich
+                systémů a ještě Vám
+                pomoci ušetřit.</p>
+        </div>
+        <form class='w-full lg:w-auto flex flex-col mt-4 lg:mt-0 md:flex-1/2 px-4' method='POST'>
+            <div class='flex flex-col sm:flex-row sm:gap-2'>
+                <label class='flex flex-col sm:flex-1/2 mt-2'>
+                    <span class='text-lg/5 primary-accented'>Jméno</span>
+                    <input type='text' name='name' placeholder='Jméno a přijmení'
+                           class='rounded-4xl text-md px-2 py-1.5 input-main-gradient-border' required/>
+                </label>
+                <label class='flex flex-col flex-full sm:flex-1/2 mt-2'>
+                    <span class='text-lg/5 primary-accented'>Email</span>
+                    <input type='email' name='email' placeholder='email@email.cz'
+                           class='rounded-4xl text-md/4.5 px-2 py-1.5 input-main-gradient-border' required/>
+                </label>
+            </div>
+            <div class='custom-select relative flex flex-col flex-full sm:flex-1/2 mt-2'>
+                <label>
+                    <span class='text-lg/5 primary-accented'>Důvod kontaktu</span>
+                    <select name="reason">
+                        {contactReasons.map((reason) => (
+                                        <option value={reason.value}>{reason.title}</option>
+                            )
+                        )}
+                    </select>
+                </label>
+            </div>
+            <label class='flex flex-col sm:flex-1/2 mb-2 mt-2'>
+                <span class='text-lg/5 primary-accented'>Zpráva</span>
+                <textarea class='input-main-gradient-border rounded-4xl p-2' name='message'
+                          placeholder='Řekněte nám o Vašem případu...' required minlength='6' rows='5'/>
+            </label>
+            <button type='submit'
+                    class='relative flex flex-1/2 items-center justify-center px-4 self-end
+            before:absolute before:inset-0 before:rounded-4xl before:bg-main-gradient before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max'
+            >
+                <span class='relative text-xs/5.5 text-center md:text-base/5.5 text-white font-montserrat font-bold'>Odeslat zprávu</span>
+            </button>
+        </form>
+    </main>
+</div>
+
+<style is:global>
+    select {
+        display: none; /*hide original SELECT element: */
+    }
+
+    .select-selected {
+        position: relative;
+    }
+
+    /* Style the arrow inside the select element: */
+    .select-selected:after {
+        position: absolute;
+        content: '';
+        top: 23px;
+        right: 17px;
+        width: 0;
+        height: 0;
+        border: 6px solid transparent;
+        border-color: var(--color-primary) transparent transparent transparent;
+        transition: all 200ms ease-in-out;
+    }
+
+    /* Point the arrow upwards when the select box is open (active): */
+    .select-selected.select-arrow-active:after {
+        top: 15px;
+        transform: rotate(180deg)
+    }
+
+    /* style the items (options), including the selected item: */
+    .select-items div, .select-selected {
+        color: var(--color-gray-900);
+        padding: 16px 16px;
+        border: 1px solid transparent;
+        border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+        cursor: pointer;
+
+        &:last-child {
+            border-color: transparent;
+        }
+    }
+
+    /* Style items (options): */
+    .select-items {
+        position: absolute;
+        background-color: #FFF;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 99;
+        transform: scale(1.15);
+    }
+
+    /* Hide the items when the select box is closed: */
+    .select-hide {
+        display: none;
+    }
+
+    .select-items div:hover, .same-as-selected {
+        &:first-child {
+            border-top-left-radius: var(--radius-4xl);
+            border-top-right-radius: var(--radius-4xl);
+        }
+
+        &:last-child {
+            border-bottom-left-radius: var(--radius-4xl);
+            border-bottom-right-radius: var(--radius-4xl);
+        }
+
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+
+    import {recaptchaConfig} from "../data/recaptchaConfig";
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const alert = document.createElement('DIV');
+        alert.setAttribute('class', 'alert-static');
+        document.body.appendChild(alert);
+        const form = document.getElementsByTagName('form')[0];
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            grecaptcha.ready(() => {
+                grecaptcha.execute(recaptchaConfig.siteKey, {action: 'submit'}).then((result) => {
+                    sendMessage(result);
+                })
+            })
+
+        })
+
+        async function sendMessage(recaptchaResult: string) {
+            const formData = new FormData(form);
+            formData.append('gRecaptcha', recaptchaResult);
+
+            try {
+                const response = await fetch('https://app.praut.cz/api/v1/web-message', {
+                    method: 'POST',
+                    body: JSON.stringify(Object.fromEntries(formData)),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                const result = await response.json();
+                console.log(result);
+                if (result.data) {
+                    showAlert('Vaše zpráva byla odeslána, budeme Vás kontaktovat co nejdříve.', 'success');
+                    form.reset()
+                } else {
+                    throw new Error('Server send error code: ' + result.status + '\n with error message:' + result.message);
+                }
+            } catch (e) {
+                console.log(e);
+                showAlert('Odeslání zprávy se nezdařilo, zkuste to prosím později znovu.', 'error')
+            }
+        }
+
+        function showAlert(message: string, type: 'error' | 'success') {
+            alert.classList.add(type);
+            alert.classList.add('active');
+            alert.innerHTML = message;
+            setTimeout(() => {
+                hideAlert(type);
+            }, 10000)
+        }
+
+        function hideAlert(type: string) {
+            alert.classList.remove('active');
+            alert.classList.remove(type);
+            alert.innerHTML = '';
+        }
+
+        let x, i, j, l, ll, selElmnt, a, b, c;
+        /*look for any elements with the class 'custom-select':*/
+        x = document.getElementsByClassName('custom-select');
+        l = x.length;
+        for (i = 0; i < l; i++) {
+            selElmnt = x[i].getElementsByTagName('select')[0];
+            ll = selElmnt.length;
+            /*for each element, create a new DIV that will act as the selected item:*/
+            a = document.createElement('DIV');
+            a.setAttribute('class', 'select-selected');
+            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+            x[i].appendChild(a);
+            /*for each element, create a new DIV that will contain the option list:*/
+            b = document.createElement('DIV');
+            b.setAttribute('class', 'select-items select-hide');
+            for (j = 0; j < ll; j++) {
+                /*for each option in the original select element, create a new DIV that will act as an option item:*/
+                c = document.createElement('DIV');
+                c.innerHTML = selElmnt.options[j].innerHTML;
+                c.addEventListener('click', function (e) {
+                    /*when an item is clicked, update the original select box,
+                and the selected item:*/
+                    let y, i, k, s, h, sl, yl;
+                    s = this.parentNode.parentNode.getElementsByTagName('select')[0];
+                    sl = s.length;
+                    h = this.parentNode.previousSibling;
+                    for (i = 0; i < sl; i++) {
+                        if (s.options[i].innerHTML == this.innerHTML) {
+                            s.selectedIndex = i;
+                            h.innerHTML = this.innerHTML;
+                            y = this.parentNode.getElementsByClassName('same-as-selected');
+                            yl = y.length;
+                            for (k = 0; k < yl; k++) {
+                                y[k].removeAttribute('class');
+                            }
+                            this.setAttribute('class', 'same-as-selected');
+                            break;
+                        }
+                    }
+                    h.click();
+                });
+                b.appendChild(c);
+            }
+            x[i].appendChild(b);
+            a.addEventListener('click', function (e) {
+                /*when the select box is clicked, close any other select boxes, and open/close the current select box:*/
+                e.stopPropagation();
+                closeAllSelect(this);
+                this.nextSibling.classList.toggle('select-hide');
+                this.classList.toggle('select-arrow-active');
+            });
+        }
+
+        function closeAllSelect(elmnt) {
+            /*a function that will close all select boxes in the document, except the current select box:*/
+            let x, y, i, xl, yl, arrNo = [];
+            x = document.getElementsByClassName('select-items');
+            y = document.getElementsByClassName('select-selected');
+            xl = x.length;
+            yl = y.length;
+            for (i = 0; i < yl; i++) {
+                if (elmnt == y[i]) {
+                    arrNo.push(i)
+                } else {
+                    y[i].classList.remove('select-arrow-active');
+                }
+            }
+            for (i = 0; i < xl; i++) {
+                if (arrNo.indexOf(i)) {
+                    x[i].classList.add('select-hide');
+                }
+            }
+        }
+
+        /*if the user clicks anywhere outside the select box, then close all select boxes:*/
+        document.addEventListener('click', closeAllSelect);
+    })
+</script>

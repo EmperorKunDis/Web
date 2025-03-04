@@ -1,0 +1,33 @@
+---
+import Technology from '../components/Technology.astro';
+import TechnologyTypes from '../components/TechnologyTypes.astro';
+import Layout from '../layouts/Layout.astro';
+import '../praut.css';
+---
+
+<Layout
+        title="Technologie | PRAUT s.r.o."
+        description="Integrace technologií umělé inteligence do firem. Zvyšte efektivitu a inovujte své podnikání s našimi AI řešeními."
+        keywords="umělá inteligence, AI integrace, firemní inovace, digitální transformace, AI řešení, podnikatelská efektivita, inovace ve firmách, umělá inteligence v podnikání, AI technologie, firemní automatizace">
+    <TechnologyTypes/>
+    <Technology/>
+
+    <div class="container py-6">
+        <div class="bg-light-gradient flex flex-row p-4 my-2 rounded-4xl items-center lg:p-6 mx-2 lg:mx-15 max-sm:flex-wrap">
+            <div class="w-full flex-full flex-initial lg:w-auto lg:flex-3/4 ">
+                <h2>Chcete se dozvědět o dalších více než 1300 nástrojích?</h2>
+                <p class="text-md pt-2">Kontaktujte nás pro více informací a začněte hned zítra!</p>
+            </div>
+            <div class="max-sm:mt-2 w-full flex-full flex flex-row flex-initial lg:w-1/2 lg:flex-1/2 sm:justify-end">
+                <a
+                        href={import.meta.env.BASE_URL + 'kontakt'}
+                        class="relative flex max-sm:w-full h-7 items-center justify-center px-4
+                before:absolute before:inset-0 before:rounded-4xl before:bg-main-gradient before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max"
+                >
+                    <span class="relative text-xs text-center md:text-base text-white font-montserrat font-bold">Kontaktujte nás</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</Layout>

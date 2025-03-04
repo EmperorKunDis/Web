@@ -1,0 +1,25 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+const {title, description, keywords} = Astro.props;
+---
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <meta name="description" content={description}/>
+    <meta name="keywords" content={keywords}/>
+    <link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + 'favicon.svg'}/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Source+Sans+3&display=swap"
+          rel="stylesheet">
+    <title>{title}</title>
+</head>
+<body class="flex flex-col min-h-full space-between pt-6 lg:pt-12">
+<Header></Header>
+<slot/>
+<Footer></Footer>
+</body>
+</html>

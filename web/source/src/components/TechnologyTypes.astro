@@ -1,0 +1,117 @@
+---
+import {Image} from "astro:assets";
+import {prautTechnologyTypes} from "../data/prautTechnologyTypes";
+---
+<div class="w-full pb-10">
+    <div class="container pt-10 px-2">
+        <div class="w-full flex flex-col items-center">
+            <h2 class="text-center mb-2">Jaké produkty a služby nabízíme?</h2>
+            <p class="text-md text-center mb-5">Objevte naší kopmlexní nabídku služeb navržených pro transformaci Vašeho
+                podníkání.</p>
+            <div id="tabs-wrapper"
+                 class="w-full flex flex-col items-center rounded-lg border-2 border-gray-200 bg-gray-200 shadow-xl">
+                <div class="w-full flex flex-row flex-grow-1 flex-nowrap overflow-auto">
+                    {
+                        prautTechnologyTypes.map((type, index) => (
+                                <div class="tab w-full font-bold font-montserrat flex flex-1 flex-row relative p-3 items-center justify-center"
+                                     data-group={index}>
+                                    <Image class="max-sm:hidden" src={type.icon} alt={type.group} height="20"/>
+                                    <span class="px-0 md:px-2 max-sm:text-xs">{type.group}</span>
+                                </div>
+                        ))
+                    }
+                </div>
+                <div class="w-full flex flex-row flex-nowrap overflow-hidden bg-white rounded-lg">
+                    {
+                        prautTechnologyTypes.map((type, index) => (
+                                <div class="content w-full flex-initial flex-shrink-0 py-2 px-5 mx-2"
+                                     data-group={index}>
+                                    {
+                                        type.list.map((ai) => (
+                                                <div class="flex flex-col md:flex-row not-last:border-b-2 border-gray-200 py-4 gap-3">
+                                                    <div class="flex flex-1/3 flex-col">
+                                                        <h2 class="flex flex-grow secondary-accented">{ai.title}</h2>
+                                                        <a href={ai.link}
+                                                           target="_blank"
+                                                           class="max-sm:hidden relative flex h-5 items-center justify-center px-2 rounded-4xl before:absolute before:w-full before:h-full before:rounded-4xl before:border-3 before:border-transparent before:border-main-gradient before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95 sm:w-max">
+                                                            <span class="relative text-xs text-center md:text-base text-main-gradient font-montserrat font-bold">{ai.title}</span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="flex flex-2/3 flex-col">
+                                                        <h4 class="max-sm:hidden">{ai.features.title}</h4>
+                                                        <ul class="text-sm list-disc ml-2">
+                                                            {
+                                                                ai.features.list.map((feature) => (
+                                                                        <li>{feature}</li>
+                                                                ))
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                        ))
+                                    }
+                                </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .tab {
+        cursor: pointer;
+    }
+
+    .tab:not(.active) {
+        background-color: var(--color-gray-200);
+        color: var(--color-gray-500);
+    }
+
+    .tab.active {
+        background-color: #FFF;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        color: var(--color-primary);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        let currentGroup = '1';
+        const tabsElement = document.getElementById('tabs-wrapper');
+
+        tabsElement.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', (event) => {
+                event.preventDefault();
+                currentGroup = event.target.closest('.tab').getAttribute('data-group');
+                toggleActiveTab();
+            })
+        })
+
+        function toggleActiveTab() {
+            tabsElement.querySelectorAll('.tab').forEach(tab => {
+                if (tab.getAttribute('data-group') === currentGroup) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            })
+
+            tabsElement.querySelectorAll('.content').forEach(tab => {
+                if (tab.getAttribute('data-group') === currentGroup) {
+                    tab.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'center'
+                    })
+                }
+            })
+        }
+
+        toggleActiveTab()
+
+    })
+</script>
